@@ -2,14 +2,14 @@ var Loggy = {
 	DEBUG: 0,
 	INFO: 1,
 	ERROR: 2,
-	levels: ["DEBUG",	"INFO",	"ERROR"],
+	levels: ["DEBUG", "INFO", "ERROR"],
 	colors: ['#C74800', 'blue', 'red'],
-	log: function(level){
+	init: function(level){
 		this.level = level || Loggy.DEBUG
 	}
 }
 
-Loggy.log.prototype.log = function(messages, level){
+Loggy.init.prototype.log = function(messages, level){
 	arguments = Array.prototype.slice.call(arguments, 0);
 	var level = arguments.pop();
 	if(typeof level == 'string')level = Loggy[level.toUpperCase()] || console.error("INVALID LOG LEVEL.");
@@ -22,17 +22,17 @@ Loggy.log.prototype.log = function(messages, level){
 	console.log.apply(console, args);
 }
 
-Loggy.log.prototype.debug = function(message){
+Loggy.init.prototype.debug = function(message){
 	var args = Array.prototype.slice.call(arguments);args.push(Loggy.DEBUG);
 	this.log.apply(this, args);
 }
 
-Loggy.log.prototype.info = function(message){
+Loggy.init.prototype.info = function(message){
 	var args = Array.prototype.slice.call(arguments);args.push(Loggy.INFO);
 	this.log.apply(this, args);
 }
 
-Loggy.log.prototype.error = function(message){
+Loggy.init.prototype.error = function(message){
 	var args = Array.prototype.slice.call(arguments);args.push(Loggy.ERROR);
 	this.log.apply(this, args);
 }
