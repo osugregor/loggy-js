@@ -4,9 +4,17 @@ var Loggy = {
 	ERROR: 2,
 	levels: ["DEBUG", "INFO", "ERROR"],
 	colors: ['#C74800', 'blue', 'red'],
-	init: function(level){
-		this.level = level || Loggy.DEBUG
-	}
+	defaults: {
+		lineFilter: function(line){return line;},
+		showLineSource: true
+    	},
+    	init: function (level, options) {
+        	this.level = level || Loggy.DEBUG
+        
+        	if(typeof options == 'undefined') options = {};
+        	this.lineFilter = options.lineFilter || Loggy.defaults.lineFilter;
+        	this.showLineSource = 'showLineSource' in options ? options.showLineSource : Loggy.defaults.showLineSource;
+    	}
 }
 
 Loggy.init.prototype.log = function(messages, level){
@@ -14,6 +22,17 @@ Loggy.init.prototype.log = function(messages, level){
 	var level = arguments.pop();
 	if(typeof level == 'string')level = Loggy[level.toUpperCase()] || console.error("INVALID LOG LEVEL.");
 	if(level < this.level)return;
+	
+	if(this.showLineSource){
+		var e = new Error();
+		var lines = e.stack.split("\n");
+		for (var i = 0; i < lines.length; i++) { 
+			var line = lines[i].trim();        
+			if(line == "Error" || line.indexOf("at Loggy") != -1)continue;
+	        	arguments.push(this.lineFilter(line));
+			break;
+		}
+	}
 	
 	var timestamp = new Date();	
 	var timestampText = ('0' + timestamp.getHours()).slice(-2) + ':' + ('0' + timestamp.getMinutes()).slice(-2) + ':' + ('0' + timestamp.getSeconds()).slice(-2);	
