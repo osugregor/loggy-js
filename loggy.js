@@ -19,11 +19,12 @@ var Loggy = {
 
 Loggy.init.prototype.log = function(messages, level){
 	arguments = Array.prototype.slice.call(arguments, 0);
-	var level = arguments.pop();
+	var level = arguments.pop(),
+    		e = new Error();
 	if(typeof level == 'string')level = Loggy[level.toUpperCase()] || console.error("INVALID LOG LEVEL.");
 	if(level < this.level || typeof console === "undefined" || typeof console.log === "undefined")return;
 	
-	if(this.showLineSource){
+	if(this.showLineSource && e.stack){
 		var e = new Error();
 		var lines = e.stack.split("\n");
 		for (var i = 0; i < lines.length; i++) { 
