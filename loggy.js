@@ -21,7 +21,7 @@ Loggy.init.prototype.log = function(messages, level){
 	arguments = Array.prototype.slice.call(arguments, 0);
 	var level = arguments.pop();
 	if(typeof level == 'string')level = Loggy[level.toUpperCase()] || console.error("INVALID LOG LEVEL.");
-	if(level < this.level)return;
+	if(level < this.level || typeof console === "undefined" || typeof console.log === "undefined")return;
 	
 	if(this.showLineSource){
 		var e = new Error();
@@ -34,11 +34,17 @@ Loggy.init.prototype.log = function(messages, level){
 		}
 	}
 	
-	var timestamp = new Date();	
-	var timestampText = ('0' + timestamp.getHours()).slice(-2) + ':' + ('0' + timestamp.getMinutes()).slice(-2) + ':' + ('0' + timestamp.getSeconds()).slice(-2);	
-	var args = ["%c" + timestampText + " | %c" + Loggy.levels[level] + "%c |", "color: black;", "color: "+Loggy.colors[level]+";", "color: black;"];
-	args = args.concat(arguments);
-	console.log.apply(console, args);
+	if(console.log.apply){
+		var timestamp = new Date();	
+		var timestampText = ('0' + timestamp.getHours()).slice(-2) + ':' + ('0' + timestamp.getMinutes()).slice(-2) + ':' + ('0' + timestamp.getSeconds()).slice(-2);	
+		var args = ["%c" + timestampText + " | %c" + Loggy.levels[level] + "%c |", "color: black;", "color: "+Loggy.colors[level]+";", "color: black;"];
+		args = args.concat(arguments);
+		console.log.apply(console, args);
+	}else{
+		console.log(messages);
+	}
+	
+	
 }
 
 Loggy.init.prototype.debug = function(message){
