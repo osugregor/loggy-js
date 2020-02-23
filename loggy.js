@@ -43,8 +43,6 @@ Loggy.init.prototype.log = function(messages){
     }else{
         console.log(messages);
     }
-
-
 };
 
 Loggy.init.prototype.debug = function(message){
